@@ -150,9 +150,9 @@ export const useCompanionStore = create<CompanionState>((set, get) => ({
     const godElems: ElementType[] = ["celestial", "cosmic", "abyssal"];
 
     let chosenElement: ElementType = "normal";
-    let baseHp = 100,
-      baseAtk = 20,
-      baseDef = 15;
+    let baseHp = 120,
+      baseAtk = 30,
+      baseDef = 30;
 
     if (rarity === "god") {
       chosenElement = godElems[Math.floor(Math.random() * godElems.length)];
