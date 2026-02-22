@@ -23,7 +23,7 @@ export default function LandingPage() {
           </h1>
         </div>
         <button
-          onClick={() => setScreen("menu")}
+          onClick={() => setScreen("world")}
           className="flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 transition-all font-medium cursor-pointer"
         >
           Entrar no DAPP
@@ -60,7 +60,7 @@ export default function LandingPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setScreen("menu")}
+              onClick={() => setScreen("world")}
               className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold text-lg shadow-[0_0_30px_rgba(147,51,234,0.3)] hover:shadow-[0_0_40px_rgba(147,51,234,0.5)] transition-all border border-purple-400/50"
             >
               <Play fill="currentColor" size={20} />

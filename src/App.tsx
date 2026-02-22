@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useGameStore } from "./store/useGameStore";
 import { useCompanionStore } from "./store/useCompanionStore";
-import MainMenu from "./components/ui/MainMenu";
 import Encyclopedia from "./components/ui/Encyclopedia";
 import BreedingArena from "./components/ui/BreedingArena";
 import WorldCanvas from "./components/canvas/WorldCanvas";
@@ -67,7 +66,6 @@ function App() {
 
         {/* Screens (pointer-events-auto re-enables interaction for UI) */}
         <div className="pointer-events-auto h-full w-full">
-          {currentScreen === "menu" && <MainMenu />}
           {currentScreen === "encyclopedia" && <Encyclopedia />}
           {currentScreen === "breeding" && <BreedingArena />}
           {currentScreen === "shop" && <Shop />}

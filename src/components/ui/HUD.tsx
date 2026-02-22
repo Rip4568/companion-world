@@ -9,7 +9,7 @@ export default function HUD() {
       {/* Top Bar */}
       <div className="pointer-events-auto flex justify-between items-start">
         <button
-          onClick={() => setScreen("menu")}
+          onClick={() => setScreen("landing")}
           className="glass-panel px-6 py-3 hover:bg-white/10 transition-colors rounded-xl font-bold border border-white/10 shadow-lg text-white cursor-pointer"
         >
           Sair do Jogo

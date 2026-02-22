@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 export type ScreenName =
-  | "menu"
   | "encyclopedia"
   | "breeding"
   | "world"
