@@ -24,8 +24,8 @@ export interface GameState {
 export const useGameStore = create<GameState>((set, get) => ({
   currentScreen: "landing",
   setScreen: (screen) => set({ currentScreen: screen }),
-  gold: 500,
-  foodCount: 10,
+  gold: 2000,
+  foodCount: 20,
 
   addGold: (amount) => set((state) => ({ gold: state.gold + amount })),
 
