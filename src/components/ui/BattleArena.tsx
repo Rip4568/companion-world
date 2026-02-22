@@ -153,7 +153,10 @@ function FighterSprite({
           blur={2}
         />
         <Billboard follow={true}>
-          <mesh scale={[4.5, 4.5, 1]} rotation={[0, 0, zRotation]}>
+          <mesh
+            scale={[4.5, 4.5, 1]}
+            rotation={[0, isPlayer ? Math.PI : 0, zRotation]}
+          >
             <planeGeometry args={[1, 1]} />
             <meshBasicMaterial
               map={tex}
