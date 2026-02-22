@@ -12,6 +12,7 @@ import {
   Stars,
   Cloud,
 } from "@react-three/drei";
+import { getTexturePath, getElementColor } from "../../utils/gameLogic/assets";
 import { useCompanionStore } from "../../store/useCompanionStore";
 import type { ElementType } from "../../store/useCompanionStore";
 
@@ -65,15 +66,7 @@ function Island() {
       </Float>
 
       {/* Decorative Clouds underneath */}
-      <Cloud
-        position={[0, -8, 0]}
-        opacity={0.5}
-        speed={0.4}
-        width={20}
-        depth={1.5}
-        segments={20}
-        color="#cbd5e1"
-      />
+      <Cloud position={[0, -8, 0]} opacity={0.5} speed={0.4} color="#cbd5e1" />
     </group>
   );
 }
@@ -98,36 +91,8 @@ function CompanionSprite({
 }) {
   // Simulating Billboarding with a basic mesh for now until we load the user images
   // We will map the images to elements
-  const colorMap: Record<ElementType, string> = {
-    fire: "#ef4444",
-    water: "#3b82f6",
-    earth: "#8b4513",
-    plant: "#22c56e",
-    ice: "#7dd3fc",
-    electric: "#eab308",
-    lava: "#dc2626",
-    swamp: "#166534",
-    magma: "#991b1b",
-    nature: "#10b981",
-    normal: "#ffffff",
-  };
-
-  const spriteColor = colorMap[companion.element] || "#ffffff";
-
-  const textureFiles: Partial<Record<ElementType, string>> = {
-    fire: "/assets/monster_fire_concept_1771723381562.png",
-    water: "/assets/monster_water_concept_1771723397494.png",
-    earth: "/assets/monster_earth_concept_1771723411624.png",
-    plant: "/assets/monster_plant_concept_1771723427171.png",
-    ice: "/assets/monster_ice_concept_1771723441859.png",
-    electric: "/assets/monster_electric_concept_1771723456331.png",
-    lava: "/assets/monster_lava_concept_1771721196539.png",
-    swamp: "/assets/monster_swamp_concept_1771721212316.png",
-    magma: "/assets/monster_magma_concept_1771723471450.png",
-    nature: "/assets/monster_nature_concept_1771723486945.png",
-  };
-
-  const spriteUrl = textureFiles[companion.element];
+  const spriteColor = getElementColor(companion.element);
+  const spriteUrl = getTexturePath(companion.element);
 
   return (
     <group position={position}>

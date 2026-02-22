@@ -7,7 +7,8 @@ export type ScreenName =
   | "world"
   | "inventory"
   | "shop"
-  | "battle";
+  | "battle"
+  | "landing";
 
 export interface GameState {
   currentScreen: ScreenName;
@@ -17,11 +18,11 @@ export interface GameState {
   addGold: (amount: number) => void;
   spendGold: (amount: number) => boolean;
   addFood: (amount: number) => void;
-  useFood: (amount: number) => boolean;
+  consumeFood: (amount: number) => boolean;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
-  currentScreen: "menu",
+  currentScreen: "landing",
   setScreen: (screen) => set({ currentScreen: screen }),
   gold: 500,
   foodCount: 10,
@@ -40,7 +41,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   addFood: (amount) =>
     set((state) => ({ foodCount: state.foodCount + amount })),
 
-  useFood: (amount) => {
+  consumeFood: (amount) => {
     const { foodCount } = get();
     if (foodCount >= amount) {
       set({ foodCount: foodCount - amount });

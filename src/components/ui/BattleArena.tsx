@@ -12,9 +12,21 @@ import {
 } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "../../store/useGameStore";
-import { useCompanionStore } from "../../store/useCompanionStore";
-import { useBattleStore, getSkillForElement } from "../../store/useBattleStore";
-import { ArrowLeft, Swords, Shield, HeartPulse } from "lucide-react";
+import {
+  useCompanionStore,
+  type Companion,
+} from "../../store/useCompanionStore";
+import {
+  useBattleStore,
+  getSkillForElement,
+  calculateElementalMultiplier,
+} from "../../store/useBattleStore";
+import { getTexturePath } from "../../utils/gameLogic/assets";
+import { ArrowLeft, Swords, Shield, HeartPulse, Zap } from "lucide-react";
+
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { useRef } from "react";
 
 // --- THREE.JS BATTLE STAGE ---
 function BattleGround() {
@@ -43,16 +55,19 @@ function FighterSprite({
   url,
   position,
   element,
-  isAttacking,
+  animatingAttack,
+  isPlayer,
   hp,
 }: {
   url: string;
   position: [number, number, number];
   element: string;
-  isAttacking: boolean;
+  animatingAttack: boolean;
+  isPlayer: boolean;
   hp: number;
 }) {
   const tex = useTexture(url);
+  const groupRef = useRef<THREE.Group>(null);
   const colorMap: Record<string, string> = {
     fire: "#ef4444",
     water: "#3b82f6",
@@ -64,6 +79,11 @@ function FighterSprite({
     swamp: "#166534",
     magma: "#991b1b",
     nature: "#10b981",
+    plasma: "#fb923c",
+    storm: "#60a5fa",
+    celestial: "#fef08a",
+    cosmic: "#c084fc",
+    abyssal: "#4c1d95",
     normal: "#ffffff",
   };
   const spriteColor = colorMap[element] || "#fff";
@@ -73,12 +93,58 @@ function FighterSprite({
   const yOffset = isFainted ? -1.5 : 0;
   const zRotation = isFainted ? Math.PI / 2 : 0;
 
+  const originalPos = new THREE.Vector3(
+    position[0],
+    position[1] + yOffset,
+    position[2],
+  );
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+
+    // Animação de Avanço/Ataque (Dash Frontal + Pulo)
+    if (animatingAttack && !isFainted) {
+      const targetZ = isPlayer ? 3 : -3;
+      const targetY = isPlayer ? 1 : 1;
+      groupRef.current.position.z = THREE.MathUtils.lerp(
+        groupRef.current.position.z,
+        targetZ,
+        12 * delta,
+      );
+      groupRef.current.position.y = THREE.MathUtils.lerp(
+        groupRef.current.position.y,
+        targetY,
+        12 * delta,
+      );
+    } else {
+      // Retorna para a posição original
+      groupRef.current.position.x = THREE.MathUtils.lerp(
+        groupRef.current.position.x,
+        originalPos.x,
+        8 * delta,
+      );
+      groupRef.current.position.y = THREE.MathUtils.lerp(
+        groupRef.current.position.y,
+        originalPos.y,
+        8 * delta,
+      );
+      groupRef.current.position.z = THREE.MathUtils.lerp(
+        groupRef.current.position.z,
+        originalPos.z,
+        8 * delta,
+      );
+    }
+  });
+
   return (
-    <group position={[position[0], position[1] + yOffset, position[2]]}>
+    <group
+      ref={groupRef}
+      position={[position[0], position[1] + yOffset, position[2]]}
+    >
       <Float
-        speed={isAttacking ? 10 : 2}
-        rotationIntensity={isFainted ? 0 : 0.1}
-        floatIntensity={isFainted ? 0 : 0.5}
+        speed={animatingAttack ? 15 : 2}
+        rotationIntensity={isFainted ? 0 : animatingAttack ? 0.5 : 0.1}
+        floatIntensity={isFainted ? 0 : animatingAttack ? 2 : 0.5}
       >
         <ContactShadows
           position={[0, -1.8, 0]}
@@ -100,10 +166,10 @@ function FighterSprite({
 
         {!isFainted && (
           <Sparkles
-            count={isAttacking ? 100 : 40}
-            scale={isAttacking ? 5 : 3.5}
-            size={isAttacking ? 10 : 6}
-            speed={isAttacking ? 2 : 0.6}
+            count={animatingAttack ? 150 : 40}
+            scale={animatingAttack ? 6 : 3.5}
+            size={animatingAttack ? 15 : 6}
+            speed={animatingAttack ? 5 : 0.6}
             color={spriteColor}
           />
         )}
@@ -119,8 +185,10 @@ export default function BattleArena() {
 
   const {
     status,
+    animatingAttack,
     playerFighter,
     enemyFighter,
+    nextEnemy,
     battleLog,
     startBattle,
     executePlayerTurn,
@@ -128,14 +196,23 @@ export default function BattleArena() {
   } = useBattleStore();
 
   useEffect(() => {
+    // Generate an enemy immediately when entering the battle screen if none exists
+    if (!nextEnemy && !playerFighter && !enemyFighter) {
+      useBattleStore.getState().generateNextEnemy();
+    }
     return () => {
       flee();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectCompanion = (comp: any) => {
+  const handleSelectCompanion = (comp: Companion) => {
     if (comp.hp <= 0 || comp.hunger <= 0) {
       alert("Este companion não pode batalhar (Sem HP ou Faminto).");
+      return;
+    }
+    if (comp.activity === "working") {
+      alert("Este companion está trabalhando e não pode batalhar agora.");
       return;
     }
     startBattle(comp);
@@ -153,22 +230,6 @@ export default function BattleArena() {
     flee();
   };
 
-  const getTexturePath = (element: string) => {
-    const map: Record<string, string> = {
-      fire: "/assets/monster_fire_concept_1771723381562.png",
-      water: "/assets/monster_water_concept_1771723397494.png",
-      earth: "/assets/monster_earth_concept_1771723411624.png",
-      plant: "/assets/monster_plant_concept_1771723427171.png",
-      ice: "/assets/monster_ice_concept_1771723441859.png",
-      electric: "/assets/monster_electric_concept_1771723456331.png",
-      lava: "/assets/monster_lava_concept_1771721196539.png",
-      swamp: "/assets/monster_swamp_concept_1771721212316.png",
-      magma: "/assets/monster_magma_concept_1771723471450.png",
-      nature: "/assets/monster_nature_concept_1771723486945.png",
-    };
-    return map[element] || "";
-  };
-
   if (!playerFighter) {
     return (
       <div className="w-full h-full bg-slate-900 overflow-y-auto p-8 relative">
@@ -184,40 +245,88 @@ export default function BattleArena() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-4xl mx-auto mt-20"
         >
-          <h2 className="text-5xl font-extrabold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+          <h2 className="text-5xl font-extrabold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
             Arena de Batalha PVE
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {companions.map((comp) => (
-              <div
-                key={comp.id}
-                onClick={() => handleSelectCompanion(comp)}
-                className={`glass-panel p-6 flex flex-col items-center gap-4 border border-white/5 transition-colors cursor-pointer ${
-                  comp.hp <= 0 || comp.hunger <= 0
-                    ? "opacity-50 grayscale cursor-not-allowed"
-                    : "hover:border-red-500/50 hover:bg-red-500/10"
-                }`}
-              >
+          {nextEnemy && (
+            <div className="flex flex-col items-center mb-12 animate-pulse">
+              <p className="text-red-400 font-bold mb-2 uppercase tracking-widest text-sm">
+                Próximo Oponente
+              </p>
+              <div className="glass-panel p-4 border border-red-500/30 flex items-center gap-4 bg-red-500/10">
                 <img
-                  src={getTexturePath(comp.element)}
-                  alt={comp.name}
-                  className="w-24 h-24 object-contain drop-shadow-lg"
+                  src={getTexturePath(nextEnemy.element)}
+                  className="w-16 h-16 object-contain drop-shadow-lg"
                 />
-                <h3 className="text-xl font-bold text-white">{comp.name}</h3>
-                <div className="flex gap-4 text-sm text-slate-300 w-full justify-center">
-                  <span className="flex items-center gap-1 font-bold text-green-400">
-                    <HeartPulse size={14} /> {comp.hp}/{comp.maxHp}
-                  </span>
-                  <span className="flex items-center gap-1 font-bold text-red-400">
-                    <Swords size={14} /> {comp.atk}
-                  </span>
-                  <span className="flex items-center gap-1 font-bold text-blue-400">
-                    <Shield size={14} /> {comp.def}
-                  </span>
+                <div>
+                  <h3 className="font-bold text-xl text-white">
+                    {nextEnemy.name}
+                  </h3>
+                  <p className="text-xs text-red-300">
+                    Level 1 - {nextEnemy.element}
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {companions.map((comp) => {
+              const cantFight =
+                comp.hp <= 0 || comp.hunger <= 0 || comp.activity === "working";
+              let effMultiplier = 1;
+              if (nextEnemy) {
+                effMultiplier = calculateElementalMultiplier(
+                  comp.element,
+                  nextEnemy.element,
+                );
+              }
+
+              return (
+                <div
+                  key={comp.id}
+                  onClick={() => handleSelectCompanion(comp)}
+                  className={`glass-panel p-6 flex flex-col items-center gap-4 relative border transition-colors cursor-pointer ${
+                    cantFight
+                      ? "opacity-50 grayscale cursor-not-allowed border-white/5"
+                      : "border-white/5 hover:border-red-500/50 hover:bg-red-500/10"
+                  }`}
+                >
+                  {comp.activity === "working" && (
+                    <div className="absolute top-2 right-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 rounded-full uppercase shadow">
+                      Trabalhando
+                    </div>
+                  )}
+                  {nextEnemy && !cantFight && effMultiplier !== 1 && (
+                    <div
+                      className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-1 rounded-full uppercase flex items-center gap-1 ${effMultiplier > 1 ? "bg-green-500/20 text-green-400 border border-green-500/50" : "bg-red-500/20 text-red-400 border border-red-500/50"}`}
+                    >
+                      <Zap size={10} />
+                      {effMultiplier > 1 ? "+50% Dano" : "-50% Dano"}
+                    </div>
+                  )}
+
+                  <img
+                    src={getTexturePath(comp.element)}
+                    alt={comp.name}
+                    className="w-24 h-24 object-contain drop-shadow-lg"
+                  />
+                  <h3 className="text-xl font-bold text-white">{comp.name}</h3>
+                  <div className="flex gap-4 text-sm text-slate-300 w-full justify-center">
+                    <span className="flex items-center gap-1 font-bold text-green-400">
+                      <HeartPulse size={14} /> {comp.hp}/{comp.maxHp}
+                    </span>
+                    <span className="flex items-center gap-1 font-bold text-red-400">
+                      <Swords size={14} /> {comp.atk}
+                    </span>
+                    <span className="flex items-center gap-1 font-bold text-blue-400">
+                      <Shield size={14} /> {comp.def}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
@@ -261,7 +370,8 @@ export default function BattleArena() {
               url={getTexturePath(playerFighter.element)}
               position={[-4, 0.5, 0]}
               element={playerFighter.element}
-              isAttacking={status === "player_turn" && Math.random() > 0.8} // Random shimmer
+              isPlayer={true}
+              animatingAttack={animatingAttack === "player"}
               hp={playerFighter.hp}
             />
 
@@ -270,7 +380,8 @@ export default function BattleArena() {
                 url={getTexturePath(enemyFighter.element)}
                 position={[4, 0.5, 0]}
                 element={enemyFighter.element}
-                isAttacking={status === "enemy_turn"}
+                isPlayer={false}
+                animatingAttack={animatingAttack === "enemy"}
                 hp={enemyFighter.hp}
               />
             )}

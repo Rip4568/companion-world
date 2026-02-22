@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useGameStore } from "../../store/useGameStore";
 import { useCompanionStore } from "../../store/useCompanionStore";
+import { getTexturePath } from "../../utils/gameLogic/assets";
 import { useState } from "react";
 import { X } from "lucide-react";
 
@@ -45,11 +46,17 @@ export default function BreedingArena() {
         <div className="flex gap-8 justify-center items-center my-8">
           <div className="w-40 h-40 glass-panel border border-dashed border-brand-primary/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors relative">
             {parent1 ? (
-              <div className="text-center">
-                <span className="font-bold block text-lg">
+              <div className="text-center flex flex-col items-center">
+                <img
+                  src={getTexturePath(
+                    companions.find((c) => c.id === parent1)?.element || "",
+                  )}
+                  className="w-16 h-16 object-contain drop-shadow-lg mb-2"
+                />
+                <span className="font-bold block text-lg leading-none">
                   {companions.find((c) => c.id === parent1)?.name}
                 </span>
-                <span className="text-xs text-brand-primary uppercase tracking-widest">
+                <span className="text-xs text-brand-primary uppercase tracking-widest mt-1 block">
                   {companions.find((c) => c.id === parent1)?.element}
                 </span>
                 <button
@@ -72,11 +79,17 @@ export default function BreedingArena() {
 
           <div className="w-40 h-40 glass-panel border border-dashed border-brand-primary/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors relative">
             {parent2 ? (
-              <div className="text-center">
-                <span className="font-bold block text-lg">
+              <div className="text-center flex flex-col items-center">
+                <img
+                  src={getTexturePath(
+                    companions.find((c) => c.id === parent2)?.element || "",
+                  )}
+                  className="w-16 h-16 object-contain drop-shadow-lg mb-2"
+                />
+                <span className="font-bold block text-lg leading-none">
                   {companions.find((c) => c.id === parent2)?.name}
                 </span>
-                <span className="text-xs text-brand-primary uppercase tracking-widest">
+                <span className="text-xs text-brand-primary uppercase tracking-widest mt-1 block">
                   {companions.find((c) => c.id === parent2)?.element}
                 </span>
                 <button
@@ -96,11 +109,11 @@ export default function BreedingArena() {
 
         {/* Companion Selector List */}
         {(!parent1 || !parent2) && (
-          <div className="mt-8 mb-6 overflow-x-auto pb-4">
+          <div className="mt-8 mb-6">
             <h3 className="text-sm uppercase tracking-widest text-slate-500 font-bold mb-3">
               Escolher Companion:
             </h3>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto max-h-48 pr-2 custom-scrollbar">
               {companions
                 .filter((c) => c.id !== parent1 && c.id !== parent2)
                 .map((c) => (
@@ -109,12 +122,20 @@ export default function BreedingArena() {
                     onClick={() =>
                       !parent1 ? setParent1(c.id) : setParent2(c.id)
                     }
-                    className="shrink-0 glass-panel p-4 rounded-xl border border-white/10 hover:border-brand-primary/50 text-left min-w-[150px]"
+                    className="glass-panel p-3 rounded-xl border border-white/10 hover:border-brand-primary/50 text-left w-full transition-colors flex items-center gap-3 bg-slate-900/50"
                   >
-                    <p className="font-bold">{c.name}</p>
-                    <p className="text-xs text-brand-accent uppercase">
-                      {c.element}
-                    </p>
+                    <img
+                      src={getTexturePath(c.element)}
+                      className="w-10 h-10 object-contain drop-shadow-md"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-white leading-tight">
+                        {c.name}
+                      </p>
+                      <p className="text-[10px] text-brand-accent uppercase font-bold tracking-widest mt-0.5">
+                        {c.element}
+                      </p>
+                    </div>
                   </button>
                 ))}
             </div>

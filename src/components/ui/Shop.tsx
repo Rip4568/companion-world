@@ -1,9 +1,18 @@
 import { motion } from "framer-motion";
 import { useGameStore } from "../../store/useGameStore";
-import { ArrowLeft, Coins, HeartPulse, Apple } from "lucide-react";
+import { useCompanionStore } from "../../store/useCompanionStore";
+import {
+  ArrowLeft,
+  Coins,
+  HeartPulse,
+  Apple,
+  Egg,
+  Sparkles,
+} from "lucide-react";
 
 export default function Shop() {
   const { setScreen, gold, spendGold, addFood } = useGameStore();
+  const hatchEgg = useCompanionStore((state) => state.hatchEgg);
 
   const handleBuyFood = () => {
     if (spendGold(10)) {
@@ -15,10 +24,31 @@ export default function Shop() {
 
   const handleBuyPotion = () => {
     if (spendGold(50)) {
-      // Futuro inventário de poções se necessário, ou aplicar efeito agora
       alert("Poção comprada! (Efeito de cura será implementado na Batalha)");
     } else {
       alert("Ouro insuficiente!");
+    }
+  };
+
+  const handleBuyBasicEgg = () => {
+    if (spendGold(100)) {
+      const comp = hatchEgg("basic");
+      alert(
+        `O Ovo Básico CHOCOU! Você obteve um(a) ${comp.name} (${comp.element})! 🌟`,
+      );
+    } else {
+      alert("Ouro insuficiente para o Ovo Básico (100g)!");
+    }
+  };
+
+  const handleBuyPremiumEgg = () => {
+    if (spendGold(500)) {
+      const comp = hatchEgg("premium");
+      alert(
+        `O Ovo Premium CHOCOU! Você obteve um PODEROSO(A) ${comp.name} (${comp.element})! ✨💥`,
+      );
+    } else {
+      alert("Ouro insuficiente para o Ovo Premium (500g)!");
     }
   };
 
@@ -96,21 +126,44 @@ export default function Shop() {
             </button>
           </div>
 
-          {/* Equipamento (Placeholder) */}
-          <div className="glass-panel p-6 flex flex-col gap-4 border border-brand-secondary/20 hover:border-brand-secondary/50 transition-colors relative overflow-hidden group opacity-60">
+          {/* Ovo Simples Gacha */}
+          <div className="glass-panel p-6 flex flex-col gap-4 border border-blue-500/20 hover:border-blue-500/50 transition-colors relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-all"></div>
             <div className="flex justify-between items-start relative z-10">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                Acessódio (Breve)
+                <Egg className="text-blue-400" /> Ovo Básico
               </h3>
             </div>
             <p className="text-sm text-slate-300 relative z-10 h-10">
-              Aumenta permanentemente o ataque ou defesa base do companion.
+              Sorteia um companion elemental. 18% para mistura, 2% taxa Divina
+              GOD.
             </p>
             <button
-              disabled
-              className="w-full mt-4 py-3 bg-white/5 text-white/30 border border-white/10 rounded-lg font-bold cursor-not-allowed"
+              onClick={handleBuyBasicEgg}
+              className="w-full mt-4 flex items-center justify-center gap-2 py-3 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 border border-blue-500/40 rounded-lg font-bold transition-colors cursor-pointer"
             >
-              Indisponível
+              <Coins size={16} /> Comprar Ovo (100g)
+            </button>
+          </div>
+
+          {/* Ovo Premium */}
+          <div className="glass-panel p-6 flex flex-col gap-4 border border-brand-secondary/20 hover:border-brand-secondary/50 transition-colors relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-brand-secondary/10 rounded-full blur-xl group-hover:bg-brand-secondary/20 transition-all"></div>
+            <div className="flex justify-between items-start relative z-10">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Sparkles className="text-brand-accent animate-pulse" /> Ovo
+                Premium
+              </h3>
+            </div>
+            <p className="text-sm text-slate-300 relative z-10 h-10">
+              Alta chance de misturas (35%) e maior taxa de origem Divina (15%).
+              Nascem fortes!
+            </p>
+            <button
+              onClick={handleBuyPremiumEgg}
+              className="w-full mt-4 flex items-center justify-center gap-2 py-3 bg-yellow-500/30 hover:bg-yellow-500/60 text-yellow-300 border border-yellow-500/50 rounded-lg font-bold transition-all cursor-pointer shadow-[0_0_15px_rgba(250,204,21,0.5)]"
+            >
+              <Coins size={16} /> Chocar Premium (500g)
             </button>
           </div>
         </div>
