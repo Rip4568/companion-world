@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 
 export default function Shop() {
-  const { setScreen, gold, spendGold, addFood } = useGameStore();
+  const { setScreen, gold, spendGold, addFood, addPotion, foodCount, potions } =
+    useGameStore();
   const hatchEgg = useCompanionStore((state) => state.hatchEgg);
 
   const handleBuyFood = () => {
@@ -24,7 +25,7 @@ export default function Shop() {
 
   const handleBuyPotion = () => {
     if (spendGold(50)) {
-      alert("Poção comprada! (Efeito de cura será implementado na Batalha)");
+      addPotion(1);
     } else {
       alert("Ouro insuficiente!");
     }
@@ -90,6 +91,9 @@ export default function Shop() {
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Apple className="text-green-400" /> Maçã Elemental
               </h3>
+              <span className="text-[10px] font-black uppercase tracking-widest bg-green-500/20 text-green-400 px-2 py-1 rounded-md border border-green-500/30">
+                Possui: {foodCount}
+              </span>
             </div>
 
             <p className="text-sm text-slate-300 relative z-10 h-10">
@@ -112,6 +116,9 @@ export default function Shop() {
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <HeartPulse className="text-red-400" /> Poção de Cura
               </h3>
+              <span className="text-[10px] font-black uppercase tracking-widest bg-red-500/20 text-red-400 px-2 py-1 rounded-md border border-red-500/30">
+                Possui: {potions}
+              </span>
             </div>
 
             <p className="text-sm text-slate-300 relative z-10 h-10">
