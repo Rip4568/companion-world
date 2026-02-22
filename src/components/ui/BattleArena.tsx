@@ -405,50 +405,54 @@ export default function BattleArena() {
         <div className="p-8 flex justify-between items-start w-full">
           <button
             onClick={handleFlee}
-            className="pointer-events-auto flex items-center gap-2 px-4 py-2 glass-panel text-white hover:bg-red-500/20 hover:border-red-500 transition-colors cursor-pointer backdrop-blur-md"
+            className="pointer-events-auto flex items-center gap-2 px-6 py-3 bg-black/40 border border-white/10 hover:border-red-500/50 hover:bg-red-500/20 backdrop-blur-md text-white rounded-full transition-all cursor-pointer font-bold shadow-lg z-10 hover:-translate-y-1"
           >
-            <ArrowLeft size={20} /> Fugir
+            <ArrowLeft size={18} /> Fugir
           </button>
 
           <div className="flex gap-32">
             {/* Player Stats */}
-            <div className="glass-panel px-6 py-4 min-w-[250px] border border-blue-500/30 backdrop-blur-md">
-              <h3 className="font-bold text-xl">{playerFighter.name}</h3>
-              <p className="text-xs text-blue-300 uppercase mb-2">
+            <div className="bg-black/40 px-6 py-4 min-w-[250px] border border-blue-500/30 backdrop-blur-md rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+              <h3 className="font-black text-xl text-white drop-shadow-md">
+                {playerFighter.name}
+              </h3>
+              <p className="text-[10px] bg-blue-500/20 text-blue-300 uppercase font-black tracking-widest px-2 py-0.5 rounded-sm inline-block mb-3 border border-blue-500/30">
                 {playerFighter.element} Lvl. 1
               </p>
-              <div className="w-full bg-black/50 h-3 rounded-full overflow-hidden border border-white/10">
+              <div className="w-full bg-slate-900/80 h-3 rounded-full overflow-hidden border border-white/10 shadow-inner">
                 <motion.div
-                  className="bg-green-500 h-full shadow-[0_0_10px_rgba(34,197,94,0.8)]"
+                  className="bg-gradient-to-r from-green-600 to-green-400 h-full shadow-[0_0_15px_rgba(74,222,128,0.8)]"
                   initial={{ width: "100%" }}
                   animate={{
                     width: `${(playerFighter.hp / playerFighter.maxHp) * 100}%`,
                   }}
                 />
               </div>
-              <p className="text-right text-xs mt-1 font-bold">
-                {playerFighter.hp} / {playerFighter.maxHp}
+              <p className="text-right text-[11px] mt-1.5 font-bold text-slate-300">
+                {playerFighter.hp} / {playerFighter.maxHp} HP
               </p>
             </div>
 
             {/* Enemy Stats */}
             {enemyFighter && (
-              <div className="glass-panel px-6 py-4 min-w-[250px] border border-red-500/30 backdrop-blur-md text-right">
-                <h3 className="font-bold text-xl">{enemyFighter.name}</h3>
-                <p className="text-xs text-red-400 uppercase mb-2">
+              <div className="bg-black/40 px-6 py-4 min-w-[250px] border border-red-500/30 backdrop-blur-md rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.2)] text-right">
+                <h3 className="font-black text-xl text-white drop-shadow-md">
+                  {enemyFighter.name}
+                </h3>
+                <p className="text-[10px] bg-red-500/20 text-red-300 uppercase font-black tracking-widest px-2 py-0.5 rounded-sm inline-block mb-3 border border-red-500/30">
                   Wild {enemyFighter.element}
                 </p>
-                <div className="w-full bg-black/50 h-3 rounded-full overflow-hidden border border-white/10 rotate-180">
+                <div className="w-full bg-slate-900/80 h-3 rounded-full overflow-hidden border border-white/10 rotate-180 shadow-inner">
                   <motion.div
-                    className="bg-red-500 h-full shadow-[0_0_10px_rgba(239,68,68,0.8)]"
+                    className="bg-gradient-to-l from-red-600 to-red-400 h-full shadow-[0_0_15px_rgba(248,113,113,0.8)]"
                     initial={{ width: "100%" }}
                     animate={{
                       width: `${(enemyFighter.hp / enemyFighter.maxHp) * 100}%`,
                     }}
                   />
                 </div>
-                <p className="text-left text-xs mt-1 font-bold">
-                  {enemyFighter.hp} / {enemyFighter.maxHp}
+                <p className="text-left text-[11px] mt-1.5 font-bold text-slate-300">
+                  {enemyFighter.hp} / {enemyFighter.maxHp} HP
                 </p>
               </div>
             )}
@@ -456,13 +460,18 @@ export default function BattleArena() {
         </div>
 
         {/* Bottom Actions UI Overlay */}
-        <div className="w-full bg-gradient-to-t from-black via-slate-900/90 to-transparent pt-32 pb-6 px-12 flex gap-8 pointer-events-auto items-end">
+        <div className="w-full bg-gradient-to-t from-black via-slate-900/90 to-transparent pt-32 pb-8 px-8 md:px-12 flex flex-col md:flex-row gap-8 pointer-events-auto items-end">
           {/* Battle Logs Log */}
-          <div className="flex-1 glass-panel p-4 overflow-y-auto max-h-40 text-sm text-slate-300 font-mono flex flex-col-reverse border border-white/5 bg-black/50 backdrop-blur-lg">
+          <div className="flex-1 bg-black/40 border border-white/10 rounded-2xl p-5 overflow-y-auto max-h-40 text-[13px] text-slate-300 font-mono shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col-reverse backdrop-blur-xl">
             {battleLog
               .map((log, i) => (
-                <p key={i} className="mb-2">
-                  <span className="text-brand-accent">{"> "}</span>
+                <p
+                  key={i}
+                  className="mb-2 leading-relaxed opacity-90 hover:opacity-100"
+                >
+                  <span className="text-brand-accent font-bold drop-shadow-[0_0_5px_rgba(255,74,90,0.5)]">
+                    {"> "}
+                  </span>
                   {log}
                 </p>
               ))
@@ -470,20 +479,20 @@ export default function BattleArena() {
           </div>
 
           {/* Actions */}
-          <div className="w-1/3 flex flex-col justify-end min-h-[120px]">
+          <div className="w-full md:w-1/3 flex flex-col justify-end min-h-[120px]">
             <AnimatePresence mode="wait">
               {status === "player_turn" && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
                   className="w-full"
                 >
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => executePlayerTurn()}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold py-5 px-6 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-blue-400 cursor-pointer text-lg tracking-wider"
+                    className="w-full bg-gradient-to-r from-blue-700 via-purple-600 to-brand-primary text-white font-black py-5 px-6 rounded-2xl shadow-[0_10px_30px_rgba(168,85,247,0.4)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.6)] border border-purple-400/50 cursor-pointer text-lg tracking-widest uppercase transition-all"
                   >
                     Atacar com {getSkillForElement(playerFighter.element).name}
                   </motion.button>
@@ -492,10 +501,10 @@ export default function BattleArena() {
 
               {status === "enemy_turn" && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex items-center justify-center p-6 glass-panel border-red-500/50 bg-red-500/10 text-xl font-bold text-red-400 animate-pulse w-full"
+                  className="flex items-center justify-center py-5 px-6 rounded-2xl bg-black/50 border border-red-500/30 text-lg uppercase tracking-widest font-black text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)] w-full backdrop-blur-xl animate-pulse"
                 >
                   Turno Inimigo...
                 </motion.div>

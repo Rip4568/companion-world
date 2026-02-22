@@ -25,9 +25,9 @@ export default function Encyclopedia() {
     <div className="w-full h-full bg-slate-900 overflow-y-auto p-8 relative">
       <button
         onClick={() => setScreen("world")}
-        className="absolute top-8 left-8 flex items-center gap-2 px-4 py-2 glass-panel text-white hover:bg-white/10 transition-colors cursor-pointer"
+        className="absolute top-8 left-8 flex items-center gap-2 px-6 py-3 bg-black/40 border border-white/10 hover:border-white/30 hover:bg-white/10 backdrop-blur-md text-white rounded-full transition-all cursor-pointer font-bold shadow-lg z-10 hover:-translate-y-1"
       >
-        <ArrowLeft size={20} /> Voltar
+        <ArrowLeft size={18} /> Hub
       </button>
 
       <motion.div
@@ -45,16 +45,16 @@ export default function Encyclopedia() {
               key={companion.id}
               className="glass-panel p-6 flex flex-col gap-4 hover:border-brand-primary/50 transition-colors border border-white/5"
             >
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <div className="flex justify-between items-center z-10 relative">
+                <h3 className="text-xl font-black text-white flex items-center gap-2 drop-shadow-md">
                   {companion.name}
                   {companion.activity === "working" && (
-                    <span className="text-[10px] bg-yellow-500 text-black px-2 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse relative -top-1">
-                      Em Trabalho
+                    <span className="text-[10px] bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-3 py-1 rounded-full font-black uppercase tracking-wider animate-pulse shadow-lg">
+                      Farmando
                     </span>
                   )}
                 </h3>
-                <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-bold uppercase tracking-wider text-brand-accent">
+                <span className="px-4 py-1.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-brand-accent shadow-md">
                   {companion.element}
                 </span>
               </div>
@@ -98,13 +98,16 @@ export default function Encyclopedia() {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-3 pt-2">
                   <button
                     onClick={() => handleFeed(companion.id, companion.hunger)}
                     disabled={companion.hunger >= 100 || foodCount <= 0}
-                    className="flex-1 mt-4 flex items-center justify-center gap-2 py-2 bg-green-500/20 hover:bg-green-500/40 text-green-400 border border-green-500/30 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-gradient-to-b from-green-600/20 to-green-900/40 hover:from-green-500/30 hover:to-green-800/50 text-green-400 border border-green-500/30 hover:border-green-400/60 rounded-xl font-bold disabled:opacity-30 disabled:grayscale transition-all cursor-pointer shadow-[0_0_15px_rgba(34,197,94,0.1)] hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:-translate-y-1"
                   >
-                    <Utensils size={16} /> Alimentar
+                    <Utensils size={18} />
+                    <span className="text-[10px] uppercase tracking-wider">
+                      Alimentar
+                    </span>
                   </button>
 
                   <button
@@ -115,15 +118,25 @@ export default function Encyclopedia() {
                       )
                     }
                     disabled={companion.hunger <= 0}
-                    className={`flex-1 mt-4 flex items-center justify-center gap-2 py-2 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer border ${companion.activity === "working" ? "bg-red-500/20 hover:bg-red-500/40 text-red-400 border-red-500/30" : "bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-400 border-yellow-500/30"}`}
+                    className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 rounded-xl font-bold disabled:opacity-30 disabled:grayscale transition-all cursor-pointer border shadow-lg hover:-translate-y-1 ${
+                      companion.activity === "working"
+                        ? "bg-gradient-to-b from-red-600/20 to-red-900/40 hover:from-red-500/30 hover:to-red-800/50 text-red-400 border-red-500/30 hover:border-red-400/60 shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+                        : "bg-gradient-to-b from-yellow-600/20 to-yellow-900/40 hover:from-yellow-500/30 hover:to-yellow-800/50 text-yellow-400 border-yellow-500/30 hover:border-yellow-400/60 shadow-[0_0_15px_rgba(234,179,8,0.1)] hover:shadow-[0_0_20px_rgba(234,179,8,0.3)]"
+                    }`}
                   >
                     {companion.activity === "working" ? (
                       <>
-                        <Moon size={16} /> Descansar
+                        <Moon size={18} />
+                        <span className="text-[10px] uppercase tracking-wider">
+                          Descansar
+                        </span>
                       </>
                     ) : (
                       <>
-                        <Pickaxe size={16} /> Trabalhar
+                        <Pickaxe size={18} />
+                        <span className="text-[10px] uppercase tracking-wider">
+                          Trabalhar
+                        </span>
                       </>
                     )}
                   </button>

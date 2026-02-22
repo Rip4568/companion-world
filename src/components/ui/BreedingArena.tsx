@@ -29,9 +29,9 @@ export default function BreedingArena() {
       >
         <button
           onClick={() => setScreen("world")}
-          className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors cursor-pointer bg-white/5 p-2 rounded-full hover:bg-white/10"
+          className="absolute -top-6 -right-6 lg:-top-8 lg:-right-8 bg-black/60 hover:bg-red-500/30 text-white/70 hover:text-white border border-white/10 hover:border-red-500/50 backdrop-blur-md p-4 rounded-full transition-all cursor-pointer shadow-2xl hover:scale-110 z-20"
         >
-          <X size={20} />
+          <X size={24} />
         </button>
 
         <div className="text-center mb-8">
@@ -145,13 +145,15 @@ export default function BreedingArena() {
         <button
           onClick={handleBreed}
           disabled={!parent1 || !parent2}
-          className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest transition-all ${
+          className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest transition-all text-lg mt-4 ${
             parent1 && parent2
-              ? "bg-gradient-to-r from-brand-primary to-orange-500 text-white shadow-[0_0_20px_rgba(255,74,90,0.4)] hover:scale-105 active:scale-95"
-              : "bg-white/10 text-white/30 cursor-not-allowed"
+              ? "bg-gradient-to-r from-brand-primary via-orange-500 to-yellow-500 text-white shadow-[0_0_30px_rgba(255,74,90,0.5)] hover:shadow-[0_0_40px_rgba(255,165,0,0.6)] hover:scale-[1.02] active:scale-95 border-b-4 border-orange-600"
+              : "bg-white/5 text-white/20 cursor-not-allowed border outline-dashed outline-2 outline-offset-2 outline-white/10"
           }`}
         >
-          {parent1 && parent2 ? "Realizar Cruzamento!" : "Selecione os Pais"}
+          {parent1 && parent2
+            ? "Infundir Genética Mágica"
+            : "Aguardando Pares Elementais"}
         </button>
       </motion.div>
     </div>
