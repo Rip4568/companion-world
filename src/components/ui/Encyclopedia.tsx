@@ -20,7 +20,7 @@ export default function Encyclopedia() {
   return (
     <div className="w-full h-full bg-slate-900 overflow-y-auto p-8 relative">
       <button
-        onClick={() => setScreen("menu")}
+        onClick={() => setScreen("world")}
         className="absolute top-8 left-8 flex items-center gap-2 px-4 py-2 glass-panel text-white hover:bg-white/10 transition-colors cursor-pointer"
       >
         <ArrowLeft size={20} /> Voltar

@@ -1,5 +1,5 @@
 import { useGameStore } from "../../store/useGameStore";
-import { Coins, HeartHandshake, BookOpen } from "lucide-react";
+import { Coins, HeartHandshake, BookOpen, Store, Swords } from "lucide-react";
 
 export default function HUD() {
   const { gold, foodCount, setScreen } = useGameStore();
@@ -37,19 +37,47 @@ export default function HUD() {
             size={32}
             className="text-blue-400 group-hover:scale-110 transition-transform"
           />
-          <span className="font-bold text-sm text-white">Companions</span>
+          <span className="font-bold text-sm text-white drop-shadow-md">
+            Companions
+          </span>
         </button>
 
         <button
           onClick={() => setScreen("breeding")}
-          className="glass-panel p-4 flex flex-col items-center gap-2 hover:bg-brand-primary/20 hover:border-brand-primary transition-all rounded-2xl hover:-translate-y-2 group border border-white/10 cursor-pointer bg-gradient-to-t from-brand-primary/10 to-transparent"
+          className="glass-panel p-4 flex flex-col items-center gap-2 hover:bg-brand-primary/20 hover:border-brand-primary transition-all rounded-2xl hover:-translate-y-2 group border border-white/10 cursor-pointer"
         >
           <HeartHandshake
             size={32}
-            className="text-brand-primary group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(255,74,90,0.8)]"
+            className="text-brand-primary group-hover:scale-110 transition-transform"
           />
           <span className="font-bold text-sm text-white drop-shadow-md">
             Cruzamento
+          </span>
+        </button>
+
+        <button
+          onClick={() => setScreen("shop")}
+          className="glass-panel p-4 flex flex-col items-center gap-2 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all rounded-2xl hover:-translate-y-2 group border border-white/10 cursor-pointer"
+        >
+          <Store
+            size={32}
+            className="text-yellow-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
+          />
+          <span className="font-bold text-sm text-white drop-shadow-md">
+            Loja
+          </span>
+        </button>
+
+        <button
+          onClick={() => setScreen("battle")}
+          className="glass-panel p-4 flex flex-col items-center gap-2 hover:bg-purple-500/20 hover:border-purple-400 transition-all rounded-2xl hover:-translate-y-2 group border border-white/10 cursor-pointer opacity-70"
+        >
+          <Swords
+            size={32}
+            className="text-purple-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+          />
+          <span className="font-bold text-sm text-white drop-shadow-md">
+            Arena PVE
           </span>
         </button>
       </div>

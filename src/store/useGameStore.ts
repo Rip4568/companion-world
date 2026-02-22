@@ -5,7 +5,9 @@ export type ScreenName =
   | "encyclopedia"
   | "breeding"
   | "world"
-  | "inventory";
+  | "inventory"
+  | "shop"
+  | "battle";
 
 export interface GameState {
   currentScreen: ScreenName;
